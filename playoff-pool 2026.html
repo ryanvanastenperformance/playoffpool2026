@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Playoff Pool 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ice: #c8e8f0;
+    --gold: #f0c040;
+    --silver: #a0b0c0;
+    --bronze: #c08050;
+    --bg: #080c10;
+    --surface: #0d1520;
+    --surface2: #121d2a;
+    --border: rgba(200,232,240,0.08);
+    --text: #e0eef5;
+    --muted: #5a7a90;
+    --up: #40d080;
+    --down: #e05050;
+    --accent: #1a8fc0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(200,232,240,0.015) 60px, rgba(200,232,240,0.015) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(200,232,240,0.015) 60px, rgba(200,232,240,0.015) 61px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+  header { padding: 48px 0 32px; text-align: center; border-bottom: 1px solid var(--border); margin-bottom: 40px; position: relative; }
+  header::after { content: ''; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%); width: 120px; height: 2px; background: var(--accent); }
+  .trophy { font-size: 40px; margin-bottom: 12px; display: block; animation: pulse 3s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.8;transform:scale(1.05)} }
+  h1 { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(32px, 6vw, 56px); font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ice); line-height: 1; }
+  .subtitle { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+  .last-updated { display: inline-block; margin-top: 16px; font-size: 12px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 4px 14px; border-radius: 20px; letter-spacing: 0.05em; }
+  .last-updated span { color: var(--ice); }
+  .section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+  .leaderboard { margin-bottom: 56px; }
+  .board-entry { display: grid; grid-template-columns: 48px 1fr 80px 80px 90px 60px; align-items: center; gap: 8px; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; position: relative; overflow: hidden; transition: border-color 0.2s, background 0.2s, transform 0.15s; }
+  .board-entry::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--border); transition: background 0.2s; }
+  .board-entry:hover { border-color: rgba(200,232,240,0.2); background: var(--surface2); transform: translateX(3px); }
+  .board-entry:hover::before { background: var(--accent); }
+  .board-entry.rank-1::before { background: var(--gold); }
+  .board-entry.rank-2::before { background: var(--silver); }
+  .board-entry.rank-3::before { background: var(--bronze); }
+  .board-entry.rank-1 { border-color: rgba(240,192,64,0.15); }
+  .rank-num { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 900; color: var(--muted); text-align: center; }
+  .rank-1 .rank-num { color: var(--gold); }
+  .rank-2 .rank-num { color: var(--silver); }
+  .rank-3 .rank-num { color: var(--bronze); }
+  .entry-name { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ice); }
+  .stat-cell { text-align: center; }
+  .stat-val { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); display: block; }
+  .stat-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .pts-cell { text-align: center; background: var(--surface2); border-radius: 6px; padding: 8px 4px; }
+  .pts-val { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 900; color: var(--ice); display: block; line-height: 1; }
+  .rank-1 .pts-val { color: var(--gold); }
+  .pts-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted); }
+  .movement { text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; }
+  .mov-up { color: var(--up); }
+  .mov-down { color: var(--down); }
+  .mov-same { color: var(--muted); }
+  .roster-section { margin-bottom: 56px; }
+  .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .roster-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .roster-card:hover { border-color: rgba(200,232,240,0.15); }
+  .roster-card-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .roster-name { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ice); }
+  .roster-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; color: var(--gold); }
+  .roster-table { width: 100%; border-collapse: collapse; }
+  .roster-table th { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  .roster-table th:not(:first-child) { text-align: center; }
+  .roster-table td { padding: 7px 12px; font-size: 13px; border-bottom: 1px solid rgba(200,232,240,0.04); }
+  .roster-table tr:last-child td { border-bottom: none; }
+  .roster-table td:not(:first-child) { text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
+  .player-name { color: var(--text); font-weight: 400; }
+  .player-team { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); margin-left: 4px; }
+  .pos-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; padding: 1px 5px; border-radius: 3px; margin-right: 4px; vertical-align: middle; }
+  .pos-f { background: rgba(26,143,192,0.2); color: #60b8e0; }
+  .pos-d { background: rgba(240,192,64,0.15); color: #c09030; }
+  .section-divider { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); padding: 6px 12px; background: rgba(200,232,240,0.03); border-bottom: 1px solid var(--border); }
+  .pts-highlight { color: var(--ice); font-weight: 700; }
+  .update-btn { display: block; margin: 0 auto 48px; padding: 12px 32px; background: transparent; border: 1px solid var(--accent); color: var(--ice); font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; border-radius: 4px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .update-btn:hover { background: var(--accent); color: #fff; }
+  .loading { text-align: center; padding: 80px 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 18px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+  .loading::after { content: ''; display: block; width: 40px; height: 2px; background: var(--accent); margin: 16px auto 0; animation: load 1.2s ease-in-out infinite alternate; }
+  @keyframes load { from{width:20px;opacity:0.3} to{width:80px;opacity:1} }
+  footer { text-align: center; padding: 32px 0; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; border-top: 1px solid var(--border); }
+  @media (max-width: 600px) {
+    .board-entry { grid-template-columns: 36px 1fr 60px 60px 70px 50px; padding: 12px; gap: 4px; }
+    .entry-name { font-size: 18px; }
+    .stat-val { font-size: 16px; }
+    .pts-val { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <span class="trophy">🏒</span>
+    <h1>Family Playoff Pool</h1>
+    <div class="subtitle">2026 Stanley Cup Playoffs</div>
+    <div class="last-updated">Last updated: <span id="update-time">Loading...</span></div>
+  </header>
+  <div id="app"><div class="loading">Fetching live stats</div></div>
+  <footer>Stats pulled live from the NHL API &nbsp;·&nbsp; Updates every time you open it</footer>
+</div>
+
+<script>
+const MEMBERS = [
+  {
+    name: "Doug",
+    forwards: ["McDavid (EDM)", "Draisaitl (EDM)", "Suzuki (MTL)", "Pastrnak (BOS)", "Necas (COL)", "MacKinnon (COL)", "Eichel (VGK)", "Crosby (PIT)", "Aho (CAR)", "Ehlers (CAR)"],
+    defence:  ["Bouchard (EDM)", "Makar (COL)", "McAvoy (BOS)", "Raddysh (TBL)", "Karlsson (PIT)"]
+  },
+  {
+    name: "Lynn",
+    forwards: ["McDavid (EDM)", "Draisaitl (EDM)", "Hyman (EDM)", "MacKinnon (COL)", "Nichushkin (COL)", "Rantanen (DAL)", "Aho (CAR)", "Svechnikov (CAR)", "Kucherov (TBL)", "Point (TBL)"],
+    defence:  ["Bouchard (EDM)", "Makar (COL)", "Burns (COL)", "Hughes (MIN)", "Heiskanen (DAL)"]
+  },
+  {
+    name: "Ryan",
+    forwards: ["McDavid (EDM)", "Draisaitl (EDM)", "MacKinnon (COL)", "Necas (COL)", "Kucherov (TBL)", "Guentzel (TBL)", "Hagel (TBL)", "Aho (CAR)", "Jarvis (CAR)", "Rantanen (DAL)"],
+    defence:  ["Bouchard (EDM)", "Makar (COL)", "Gostisbehere (CAR)", "Dahlin (BUF)", "Raddysh (TBL)"]
+  },
+  {
+    name: "Brett",
+    forwards: ["McDavid (EDM)", "Draisaitl (EDM)", "MacKinnon (COL)", "Necas (COL)", "Aho (CAR)", "Eichel (VGK)", "Kaprizov (MIN)", "Kucherov (TBL)", "Hagel (TBL)", "Point (TBL)"],
+    defence:  ["Makar (COL)", "Gostisbehere (CAR)", "Hughes (MIN)", "Bouchard (EDM)", "Raddysh (TBL)"]
+  },
+  {
+    name: "Jackie",
+    forwards: ["McDavid (EDM)", "MacKinnon (COL)", "Necas (COL)", "Johnston (DAL)", "Rantanen (DAL)", "Robertson (DAL)", "Thompson (BUF)", "Kucherov (TBL)", "Guentzel (TBL)", "Aho (CAR)"],
+    defence:  ["Makar (COL)", "Bouchard (EDM)", "Dahlin (BUF)", "Raddysh (TBL)", "Heiskanen (DAL)"]
+  },
+  {
+    name: "Krista",
+    forwards: ["McDavid (EDM)", "Draisaitl (EDM)", "MacKinnon (COL)", "Necas (COL)", "Kucherov (TBL)", "Guentzel (TBL)", "Aho (CAR)", "Johnston (DAL)", "Caufield (MTL)", "Thompson (BUF)"],
+    defence:  ["Bouchard (EDM)", "Dahlin (BUF)", "Makar (COL)", "Burns (COL)", "Toews (COL)"]
+  }
+];
+
+let previousStandings = JSON.parse(localStorage.getItem('prevStandings') || '{}');
+let allPlayers = [];
+
+async function fetchStats() {
+  const url = "https://api.nhle.com/stats/rest/en/skater/summary?isAggregate=false&isGame=false&sort=%5B%7B%22property%22:%22points%22,%22direction%22:%22DESC%22%7D%5D&start=0&limit=1000&cayenneExp=gameTypeId%3D3%20and%20seasonId%3D20252026";
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.data || [];
+}
+
+function parsePlayer(str) {
+  const m = str.match(/^(.+?)\s*\(([^)]+)\)$/);
+  if (!m) return { lastName: str.toLowerCase(), team: '' };
+  return { lastName: m[1].trim().toLowerCase(), team: m[2].trim().toUpperCase() };
+}
+
+function findStats(lastName, team) {
+  let p = allPlayers.find(x => x.lastName === lastName && x.team === team);
+  if (!p) p = allPlayers.find(x => x.lastName === lastName);
+  return p ? { goals: p.goals, assists: p.assists } : { goals: 0, assists: 0 };
+}
+
+function calcMember(member) {
+  let goals = 0, assists = 0;
+  [...member.forwards, ...member.defence].forEach(str => {
+    const { lastName, team } = parsePlayer(str);
+    const s = findStats(lastName, team);
+    goals += s.goals;
+    assists += s.assists;
+  });
+  return { goals, assists, points: goals + assists };
+}
+
+function movementHTML(name, rank) {
+  const prev = previousStandings[name];
+  if (prev === undefined) return '<span class="mov-same">—</span>';
+  const diff = prev - rank;
+  if (diff > 0) return `<span class="mov-up">&#9650;${diff}</span>`;
+  if (diff < 0) return `<span class="mov-down">&#9660;${Math.abs(diff)}</span>`;
+  return '<span class="mov-same">&#8212;</span>';
+}
+
+function renderPlayerRow(str, pos) {
+  const { lastName, team } = parsePlayer(str);
+  const s = findStats(lastName, team);
+  const display = str.replace(/\s*\(.*\)/, '');
+  return `<tr>
+    <td><span class="pos-badge pos-${pos.toLowerCase()}">${pos}</span><span class="player-name">${display}</span><span class="player-team">${team}</span></td>
+    <td>${s.goals}</td>
+    <td>${s.assists}</td>
+    <td class="pts-highlight">${s.goals + s.assists}</td>
+  </tr>`;
+}
+
+function render(standings) {
+  const now = new Date();
+  document.getElementById('update-time').textContent = now.toLocaleString('en-CA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+  let html = `<div class="leaderboard"><div class="section-label">Standings</div>`;
+  standings.forEach((entry, i) => {
+    const rank = i + 1;
+    const rankClass = rank <= 3 ? `rank-${rank}` : '';
+    const medal = rank === 1 ? '&#127945;' : rank === 2 ? '&#129352;' : rank === 3 ? '&#129353;' : '';
+    html += `
+      <div class="board-entry ${rankClass}">
+        <div class="rank-num">${medal || rank}</div>
+        <div class="entry-name">${entry.name}</div>
+        <div class="stat-cell"><span class="stat-val">${entry.goals}</span><span class="stat-lbl">Goals</span></div>
+        <div class="stat-cell"><span class="stat-val">${entry.assists}</span><span class="stat-lbl">Assists</span></div>
+        <div class="pts-cell"><span class="pts-val">${entry.points}</span><span class="pts-lbl">PTS</span></div>
+        <div class="movement">${movementHTML(entry.name, rank)}</div>
+      </div>`;
+  });
+
+  html += `</div>
+    <button class="update-btn" onclick="init()">&#8635; &nbsp;Refresh Stats</button>
+    <div class="roster-section">
+      <div class="section-label">Rosters</div>
+      <div class="roster-grid">`;
+
+  standings.forEach(entry => {
+    const member = MEMBERS.find(m => m.name === entry.name);
+    html += `
+      <div class="roster-card">
+        <div class="roster-card-header">
+          <span class="roster-name">${entry.name}</span>
+          <span class="roster-pts">${entry.points} pts</span>
+        </div>
+        <table class="roster-table">
+          <thead><tr><th>Player</th><th>G</th><th>A</th><th>PTS</th></tr></thead>
+          <tbody>
+            <tr><td colspan="4" class="section-divider">Forwards</td></tr>
+            ${member.forwards.map(p => renderPlayerRow(p, 'F')).join('')}
+            <tr><td colspan="4" class="section-divider">Defence</td></tr>
+            ${member.defence.map(p => renderPlayerRow(p, 'D')).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  });
+
+  html += `</div></div>`;
+  document.getElementById('app').innerHTML = html;
+}
+
+async function init() {
+  document.getElementById('app').innerHTML = '<div class="loading">Fetching live stats</div>';
+  try {
+    const data = await fetchStats();
+    allPlayers = data.map(p => ({
+      lastName: (p.lastName || '').toLowerCase(),
+      team: (p.teamAbbrevs || '').toUpperCase(),
+      goals: p.goals || 0,
+      assists: p.assists || 0
+    }));
+
+    const standings = MEMBERS.map(m => ({ name: m.name, ...calcMember(m) }))
+      .sort((a, b) => b.points - a.points);
+
+    render(standings);
+
+    const newPrev = {};
+    standings.forEach((s, i) => newPrev[s.name] = i + 1);
+    localStorage.setItem('prevStandings', JSON.stringify(newPrev));
+
+  } catch(e) {
+    document.getElementById('app').innerHTML = `<div class="loading">Could not load stats. Check your internet connection.</div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
